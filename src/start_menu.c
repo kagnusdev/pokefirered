@@ -33,7 +33,6 @@
 #include "trainer_card.h"
 #include "option_menu.h"
 #include "save_menu_util.h"
-#include "help_system.h"
 #include "constants/songs.h"
 #include "constants/field_weather.h"
 #include "sloopsvc.h"
@@ -567,8 +566,6 @@ static bool8 StartMenuLinkPlayerCallback(void)
 
 static bool8 StartCB_Save1(void)
 {
-    BackupHelpContext();
-    SetHelpContext(HELPCONTEXT_SAVE);
     StartMenu_PrepareForSave();
     sStartMenuCallback = StartCB_Save2;
     return FALSE;
@@ -584,19 +581,16 @@ static bool8 StartCB_Save2(void)
         ClearDialogWindowAndFrameToTransparent(0, TRUE);
         ClearPlayerHeldMovementAndUnfreezeObjectEvents();
         UnlockPlayerFieldControls();
-        RestoreHelpContext();
         return TRUE;
     case SAVECB_RETURN_CANCEL:
         ClearDialogWindowAndFrameToTransparent(0, FALSE);
         DrawStartMenuInOneGo();
-        RestoreHelpContext();
         sStartMenuCallback = StartCB_HandleInput;
         break;
     case SAVECB_RETURN_ERROR:
         ClearDialogWindowAndFrameToTransparent(0, TRUE);
         ClearPlayerHeldMovementAndUnfreezeObjectEvents();
         UnlockPlayerFieldControls();
-        RestoreHelpContext();
         return TRUE;
     }
     return FALSE;
@@ -619,8 +613,6 @@ static u8 RunSaveDialogCB(void)
 
 void Field_AskSaveTheGame(void)
 {
-    BackupHelpContext();
-    SetHelpContext(HELPCONTEXT_SAVE);
     StartMenu_PrepareForSave();
     CreateTask(task50_save_game, 80);
 }
@@ -650,7 +642,6 @@ static void task50_save_game(u8 taskId)
     }
     DestroyTask(taskId);
     ScriptContext_Enable();
-    RestoreHelpContext();
 }
 
 static void CloseSaveMessageWindow(void)
