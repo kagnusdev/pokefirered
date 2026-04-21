@@ -1385,7 +1385,7 @@ static u16 CreateMonSprite(u32 species, u32 mode)
     y += gMonFrontPicCoords[species].y_offset;
     y -= gEnemyMonElevation[species];
 
-    ret = CreateMonPicSprite(species, otId, personality, TRUE, x, y, 12, TAG_NONE, TRUE);
+    ret = CreateMonPicSprite(species, otId, personality, TRUE, x, y, TS_MON_PAL_IDX, TAG_NONE, TRUE);
 
     if (ret != MAX_SPRITES)
     {
@@ -1408,7 +1408,7 @@ static u16 CreateMonSprite(u32 species, u32 mode)
 
 static void StartMonListScrolling(void)
 {
-    u32 id = FindTaskIdByFunc(Task_MonListScroller); 
+    u32 id = FindTaskIdByFunc(Task_MonListScroller);
 
     if (id != TASK_NONE)
     {
@@ -1418,7 +1418,7 @@ static void StartMonListScrolling(void)
 
 static void PauseMonListScrolling(void)
 {
-    u32 id = FindTaskIdByFunc(Task_MonListScroller); 
+    u32 id = FindTaskIdByFunc(Task_MonListScroller);
 
     if (id != TASK_NONE)
     {
@@ -1426,7 +1426,11 @@ static void PauseMonListScrolling(void)
         struct Sprite *monSprite;
         tState = 5;
         monSprite = &gSprites[tMonSprite];
-        monSprite->callback = SpriteCallbackDummy;
+        if (monSprite->callback != SpriteCallbackDummy)
+        {
+            ReleaseComfyAnim(monSprite->sComfyAnim);
+            monSprite->callback = SpriteCallbackDummy;
+        }
     }
 }
 
